@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learningdart/register_view.dart';
+import 'package:learningdart/verify_email_view.dart';
 
 import 'firebase_options.dart';
 import 'login_view.dart';
@@ -18,19 +20,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.blue,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-          )
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: false,
         ),
-        useMaterial3: true,
-      ),
-      home: const HomePage()
-    );
+        routes: {
+          '/registerView/':(context) => const RegisterView(),
+          '/loginView/':(context) => const LoginView()
+        },
+        home: const HomePage());
   }
 }
 
@@ -39,23 +38,34 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('home')),
-        body: FutureBuilder(
-            future: Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  print(FirebaseAuth.instance.currentUser);
-                  return const Text('done');
-                default:
-                  return const Center(
-                    child:Text('加载中。。。') ,
-                  );
+    return FutureBuilder(
+        future: Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+            //获取当前用户
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                if(user.emailVerified){
+                  print('用户邮箱已完成验证');
+                  return const LoginView();
+                }else{
+                  return const VerifyEmailView();
+                }
+              }else{
+                print("用户是null");
+              return const LoginView();
               }
-            }));
+            default:
+              return const Center(
+                child: CircularProgressIndicator()
+              );
+          }
+        });
   }
 }
+
 
 
 
