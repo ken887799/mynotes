@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as devtools show log;
 
+import 'constant/routes.dart';
+
 //因为textfield会在点击按钮后被获取,页面有变动,所以是可变状态控件
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -65,7 +67,8 @@ class _LoginViewState extends State<LoginView> {
                 try {
                   final credential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(email: email, password: pwd);
-                  Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
+                  if(!context.mounted)return;
+                  Navigator.of(context).pushNamedAndRemoveUntil(noteRoute, (route) => false);
                 } on FirebaseAuthException catch (e) {
                   devtools.log("该程序的log:${e.code}" );
                 } catch (e) {
@@ -76,7 +79,7 @@ class _LoginViewState extends State<LoginView> {
           TextButton(onPressed: ()
           {
             //该方法会清空页面，然后挂载新页面，所以要挂载的新页面必须填满整个屏幕
-            Navigator.of(context).pushNamedAndRemoveUntil('/registerView/', (route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
           },
               child: const Text("尚未注册? 请注册"))
         ],

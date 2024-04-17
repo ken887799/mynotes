@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:learningdart/register_view.dart';
 import 'package:learningdart/verify_email_view.dart';
 
+import 'constant/routes.dart';
 import 'firebase_options.dart';
 import 'login_view.dart';
 import 'dart:developer' as devtools show log;
@@ -29,9 +30,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: false,
         ),
         routes: {
-          '/registerView/': (context) => const RegisterView(),
-          '/loginView/': (context) => const LoginView(),
-          '/notes/':(context) => const NotesView(),
+          registerRoute: (context) => const RegisterView(),
+          loginRoute: (context) => const LoginView(),
+          noteRoute:(context) => const NotesView(),
         },
         home: const HomePage());
   }
@@ -118,7 +119,7 @@ class _NotesViewState extends State<NotesView> {
                       //DON'T use BuildContext across asynchronous gaps.
                       //在异步处理中存储 BuildContext 并在稍后使用它可能导致难以诊断的崩溃。
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/loginView/', (route) => false);
+                          loginRoute, (route) => false);
                     }
                 }
               },

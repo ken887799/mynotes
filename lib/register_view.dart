@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as devtools show log;
 
+import 'constant/routes.dart';
+
 //因为textfield会在点击按钮后被获取,页面有变动,所以是可变状态控件
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -68,7 +70,7 @@ class _RegisterViewState extends State<RegisterView> {
               child: const Text('注册')
           ),
           TextButton(onPressed: (){
-            Navigator.of(context).pushNamedAndRemoveUntil('/loginView/', (route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
           }, child: const Text("已注册，请登录"))
         ],
       ),
