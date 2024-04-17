@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as devtools show log;
 
 //因为textfield会在点击按钮后被获取,页面有变动,所以是可变状态控件
 class RegisterView extends StatefulWidget {
@@ -62,7 +63,7 @@ class _RegisterViewState extends State<RegisterView> {
                 final pwd = _pwd.text;
                 final credential = await FirebaseAuth.instance
                     .createUserWithEmailAndPassword(email: email, password: pwd);
-                print(credential);
+                devtools.log(credential.toString());
               },
               child: const Text('注册')
           ),

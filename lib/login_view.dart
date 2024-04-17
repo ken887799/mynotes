@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as devtools show log;
 
 //因为textfield会在点击按钮后被获取,页面有变动,所以是可变状态控件
 class LoginView extends StatefulWidget {
@@ -64,11 +65,11 @@ class _LoginViewState extends State<LoginView> {
                 try {
                   final credential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(email: email, password: pwd);
-                  // print(credential);
+                  Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
                 } on FirebaseAuthException catch (e) {
-                  print("该程序的log: " + e.code);
+                  devtools.log("该程序的log:${e.code}" );
                 } catch (e) {
-                  print('系统错误');
+                  devtools.log('系统错误');
                 }
               },
               child: const Text('登录')),

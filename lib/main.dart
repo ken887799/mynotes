@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           '/registerView/': (context) => const RegisterView(),
-          '/loginView/': (context) => const LoginView()
+          '/loginView/': (context) => const LoginView(),
+          '/notes/':(context) => const NotesView(),
         },
         home: const HomePage());
   }
@@ -51,13 +52,13 @@ class HomePage extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
                 if (user.emailVerified) {
-                  print('用户邮箱已完成验证');
+                  devtools.log('用户邮箱已完成验证');
                   return const NotesView();
                 } else {
                   return const VerifyEmailView();
                 }
               } else {
-                print("用户是null");
+                devtools.log("用户是null");
                 return const LoginView();
               }
             default:
@@ -111,6 +112,8 @@ class _NotesViewState extends State<NotesView> {
                   case MenuAction.logout:
                     final bool shouldLogout = await logoutDialog(context);
                     if (shouldLogout) {
+                      devtools.log(shouldLogout.toString());
+                      await FirebaseAuth.instance.signOut();
                       if (!context.mounted) return;
                       //DON'T use BuildContext across asynchronous gaps.
                       //在异步处理中存储 BuildContext 并在稍后使用它可能导致难以诊断的崩溃。
