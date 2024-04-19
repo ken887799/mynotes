@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:learningdart/utilities/show_error_dialog.dart';
 import 'dart:developer' as devtools show log;
 
 import 'constant/routes.dart';
@@ -70,6 +71,7 @@ class _LoginViewState extends State<LoginView> {
                   if(!context.mounted)return;
                   Navigator.of(context).pushNamedAndRemoveUntil(noteRoute, (route) => false);
                 } on FirebaseAuthException catch (e) {
+                  await errorDialog(context, '无效的邮箱或密码');
                   devtools.log("该程序的log:${e.code}" );
                 } catch (e) {
                   devtools.log('系统错误');
@@ -87,3 +89,4 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+
