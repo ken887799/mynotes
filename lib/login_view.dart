@@ -64,9 +64,8 @@ class _LoginViewState extends State<LoginView> {
                 //通过绑定点击按钮来实现文本获取
                 final email = _email.text;
                 final pwd = _pwd.text;
-      
                 try {
-                  final credential = await FirebaseAuth.instance
+                   await FirebaseAuth.instance
                       .signInWithEmailAndPassword(email: email, password: pwd);
                   if(!context.mounted)return;
                   Navigator.of(context).pushNamedAndRemoveUntil(noteRoute, (route) => false);
@@ -74,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                   await errorDialog(context, '无效的邮箱或密码');
                   devtools.log("该程序的log:${e.code}" );
                 } catch (e) {
-                  devtools.log('系统错误');
+                  devtools.log('系统错误 ${e.toString()}');
                 }
               },
               child: const Text('登录')),

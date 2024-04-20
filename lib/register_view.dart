@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:learningdart/utilities/show_error_dialog.dart';
 import 'dart:developer' as devtools show log;
 
 import 'constant/routes.dart';
@@ -63,15 +64,45 @@ class _RegisterViewState extends State<RegisterView> {
                 //通过绑定点击按钮来实现文本获取
                 final email = _email.text;
                 final pwd = _pwd.text;
-                final credential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(email: email, password: pwd);
-                devtools.log(credential.toString());
+                try {
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email, password: pwd);
+                  // 验证邮箱
+                  final user = FirebaseAuth.instance.currentUser;
+                  await user?.sendEmailVerification();
+                  //迁移到邮箱验证界面
+                  if (!context.mounted) return;
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
+                } on FirebaseAuthException catch (e) {
+                  switch (e.code) {
+                    case 'weak-password':
+                      devtools.log('error:${e.code}');
+                      if (!context.mounted) return;
+                      await errorDialog(context, '密码过于简单');
+                    case 'email-already-in-use':
+                      devtools.log('error:${e.code}');
+                      if (!context.mounted) return;
+                      await errorDialog(context, '此邮箱已被使用');
+                    case 'invalid-email':
+                      devtools.log('error:${e.code}');
+                      if (!context.mounted) return;
+                      await errorDialog(context, '无效的邮箱地址');
+                    default:
+                      devtools.log('error:${e.code}');
+                      if (!context.mounted) return;
+                      await errorDialog(context, 'error:${e.code}');
+                  }
+                } catch (e) {
+                  devtools.log('系统错误 ${e.toString()}');
+                }
               },
-              child: const Text('注册')
-          ),
-          TextButton(onPressed: (){
-            Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
-          }, child: const Text("已注册，请登录"))
+              child: const Text('注册')),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+              },
+              child: const Text("已注册，请登录"))
         ],
       ),
     );
