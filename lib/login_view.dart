@@ -67,8 +67,16 @@ class _LoginViewState extends State<LoginView> {
                 try {
                    await FirebaseAuth.instance
                       .signInWithEmailAndPassword(email: email, password: pwd);
+                   final user = FirebaseAuth.instance.currentUser;
+                   if(user?.emailVerified?? false){
+                     //用户验证了
                   if(!context.mounted)return;
                   Navigator.of(context).pushNamedAndRemoveUntil(noteRoute, (route) => false);
+                   }else{
+                     //用户没验证
+                     if(!context.mounted)return;
+                     Navigator.of(context).pushNamed(verifyEmailRoute);
+                   }
                 } on FirebaseAuthException catch (e) {
                   await errorDialog(context, '无效的邮箱或密码');
                   devtools.log("该程序的log:${e.code}" );
