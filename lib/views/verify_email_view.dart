@@ -1,8 +1,6 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'constant/routes.dart';
+import 'package:learningdart/services/auth/auth_service.dart';
+import '../constant/routes.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -30,8 +28,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           const Text('如果没有收到邮件，请点击下方按钮'),
           TextButton(
               onPressed: () async {
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                final user = AuthService.firebase().currentUser;
+                await AuthService.firebase().sendEmailVerification();
               },
               child: const Text("重新发送")),
           //在list中可以添加if判断语句,但是不能不能有{}

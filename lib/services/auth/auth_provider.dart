@@ -5,6 +5,9 @@ abstract class AuthProvider{
   //用户可以为null
   AuthUser? get currentUser;
 
+  //初始化Firebase
+  Future<void> initialize();
+
   //用户登录,这里的返回值是AuthUser而非Firebase的userCredential,无法输出相关信息
   Future<AuthUser> login({
     required String email,
